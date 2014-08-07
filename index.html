@@ -116,6 +116,7 @@
     <div class="table-responsive">
       <table class="table table-bordered table-hover table-condensed">
         <colgroup>
+          <col class="col-xs-1">
           <col class="col-xs-4">
           <col class="col-xs-1">
           <col class="col-xs-1">
@@ -123,6 +124,9 @@
         </colgroup>
         <thead>
           <tr>
+            <th>
+              #
+            </th>
             <th>
               Producto
             </th>
@@ -145,17 +149,20 @@
     </div>
     </script>
     <script type="text/template" id="venta-total-template">
-      <td colspan="2" class="text-right">Total</td>
-      <td>$<%= total %></td>
+      <td colspan="3" class="text-right">Total<div class="text-success">15%</div></td>
+      <td colspan="2">$<%= total %><div class="text-success">$<%= (total * 15 / 100) %></div></td>
     </script>
     <script type="text/template" id="venta-item-template">
-        <td class="textcell">
+        <td>
+          <%= index %>
+        </td>
+        <td>
           <%= product.title %> - <%= product.type %>
         </td>
-        <td class="textcell">
+        <td>
           <%= size %>
         </td>
-        <td class="textcell">
+        <td>
           $<%= product.price %>
         </td>
         <td class="text-center">

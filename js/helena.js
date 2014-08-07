@@ -15,8 +15,10 @@ $(function() {
   Parse.$ = jQuery;
 
   // Initialize Parse with your Parse application javascript keys
-  Parse.initialize("app-key",
-                   "js-key");
+  // Parse.initialize("app-key",
+  //                  "js-key");
+  Parse.initialize("6du3fMUYC9Qxw3eVBbMC23KzL18OCXKg5LFqXWzz",
+                   "4ziWsluhyuwhErLiwTkm3iY4QHaCkUiLPwCeKIGN");
 
   // Todo Model
   // ----------
@@ -337,14 +339,17 @@ $(function() {
     // The TodoView listens for changes to its model, re-rendering. Since there's
     // a one-to-one correspondence between a Todo and a TodoView in this
     // app, we set a direct reference on the model for convenience.
-    initialize: function() {
+    initialize: function(options) {
+      options = options || {};
       _.bindAll(this, 'render');
 
+      this.index = options.index;
       this.model.bind('sync', this.render);
     },
 
     render: function() {
       var item = _.extend(this.model.toJSON(), {
+          index: this.index,
           soldAt: this.model.get("soldAt") ? formatDate(this.model.get("soldAt")) : '',
           product: this.model.get('product').toJSON()
         });
@@ -423,8 +428,8 @@ $(function() {
     },
     // Add a single todo item to the list by creating a view for it, and
     // appending its element to the `<ul>`.
-    addOne: function(item) {
-      var view = new VentasItemView({model: item});
+    addOne: function(item, index) {
+      var view = new VentasItemView({model: item, index: item.collection.size() - index});
       this.$("#ventas-body").append(view.render().el);
     },
 
