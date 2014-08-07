@@ -2,6 +2,14 @@
 // [Jérôme Gravel-Niquet](http://jgn.me/). This demo uses Parse to persist
 // the todo items and provide user authentication and sessions.
 
+function formatDate(date)
+{
+  var yyyy = date.getFullYear().toString();
+  var mm = (date.getMonth()+1).toString(); // getMonth() is zero-based
+  var dd  = date.getDate().toString();
+
+  return yyyy + '-' + (mm[1]?mm:"0"+mm[0]) + '-' + (dd[1]?dd:"0"+dd[0]);
+}
 $(function() {
 
   Parse.$ = jQuery;
@@ -238,7 +246,7 @@ $(function() {
 
       var item = _.extend(this.model.toJSON(), {
           sold: this.model.get("sold") === true,
-          soldAt: this.model.get("soldAt") ? this.model.get("soldAt").getDay() + '/' + this.model.get("soldAt").getMonth() : '',
+          soldAt: this.model.get("soldAt") ? formatDate(this.model.get("soldAt")) : '',
           product: this.model.get('product').toJSON()
         });
 
