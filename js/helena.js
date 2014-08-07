@@ -138,17 +138,22 @@ $(function() {
       this.$el.html(_.template($("#products-template").html()));
 
       // Create our collection of Todos
-      this.products = new ProductList;
+      this.products = new ProductList();
 
       // Setup the query for the collection to look for products from the current user
       this.products.query = new Parse.Query(Product);
 
-      this.products.bind('all',     this.render);
+      this.products.bind('all',         this.render);
+      this.products.bind('change:sold', this.onChange);
 
       // Fetch all the todo items for this user
       $('.loading').show();
       this.products.fetch();
 
+    },
+
+    onChange: function(model) {
+      this.trigger('item:change', {model: model});
     },
 
     // Add a single todo item to the list by creating a view for it, and
@@ -224,6 +229,7 @@ $(function() {
         alert('Error al guardar los datos de "' + model.get('product').get('title') + '-' + model.get('product').get('type') + '" talle ' + model.get('size') + ', intentar nuevamente luego de refrescar la pagina');
       }).done(function(){
         $('.loading').hide();
+        appView.onItemChange();
       });
     },
     undoSold: function() {
@@ -235,6 +241,7 @@ $(function() {
         alert('Error al deshacer los datos de "' + model.get('product').get('title') + '-' + model.get('product').get('type') + '" talle ' + model.get('size') + ', intentar nuevamente luego de refrescar la pagina');
       }).done(function(){
         $('.loading').hide();
+        appView.onItemChange();
       });
 
     },
@@ -277,7 +284,7 @@ $(function() {
       this.$el.html(_.template($("#product-detail-template").html()));
 
       // Create our collection of Todos
-      this.items = new ItemList;
+      this.items = new ItemList();
 
       // Setup the query for the collection to look for items from the current user
       this.items.query = new Parse.Query(Item);
@@ -318,6 +325,102 @@ $(function() {
 
   });
 
+  // The DOM element for a todo item...
+  var VentasItemView = Parse.View.extend({
+
+    //... is a list tag.
+    tagName:  "tr",
+
+    // Cache the template function for a single item.
+    template: _.template($('#venta-item-template').html()),
+
+    // The TodoView listens for changes to its model, re-rendering. Since there's
+    // a one-to-one correspondence between a Todo and a TodoView in this
+    // app, we set a direct reference on the model for convenience.
+    initialize: function() {
+      _.bindAll(this, 'render');
+
+      this.model.bind('sync', this.render);
+    },
+
+    render: function() {
+      var item = _.extend(this.model.toJSON(), {
+          soldAt: this.model.get("soldAt") ? formatDate(this.model.get("soldAt")) : '',
+          product: this.model.get('product').toJSON()
+        });
+
+      this.$el.html(this.template(item));
+      return this;
+    }
+
+  });
+
+  var VentasView = Parse.View.extend({
+
+    // Delegated events for creating new items, and clearing completed ones.
+    events: {
+    },
+
+    el: ".ventas-content",
+
+    // At initialization we bind to the relevant events on the `Todos`
+    // collection, when items are added or changed. Kick things off by
+    // loading any preexisting todos that might be saved to Parse.
+    initialize: function() {
+      var self = this;
+
+      _.bindAll(this, 'render', 'refresh');
+
+      // Main todo management template
+      this.$el.html(_.template($("#ventas-template").html()));
+
+      // Create our collection of Todos
+      this.items = new ItemList;
+
+      // Setup the query for the collection to look for items from the current user
+      this.items.query = new Parse.Query(Item);
+      this.items.query.equalTo("sold", true);
+      this.items.query.include("product");
+      this.items.query.descending("soldAt");
+
+      this.refresh();
+
+      this.on('refresh', this.refresh);
+    },
+
+    refresh: function(){
+      var me = this;
+      // Fetch all the todo items for this user
+      $('.loading').show();
+      this.items.fetch().done(function(){
+        me.render();
+        $('.loading').hide();
+      });
+    },
+    // Add a single todo item to the list by creating a view for it, and
+    // appending its element to the `<ul>`.
+    addOne: function(item) {
+      var view = new VentasItemView({model: item});
+      this.$("#ventas-body").append(view.render().el);
+    },
+
+    // Add all items in the Todos collection at once.
+    addAll: function(collection, filter) {
+      this.$("#ventas-body").html("");
+      this.items.each(this.addOne);
+    },
+
+    // Re-rendering the App just means refreshing the statistics -- the rest
+    // of the app doesn't change.
+    render: function() {
+
+      this.addAll();
+      this.delegateEvents();
+
+    }
+
+  });
+
   // The main view for the app
   var AppView = Parse.View.extend({
     // Instead of generating a new element, bind to the existing skeleton of
@@ -328,8 +431,13 @@ $(function() {
       this.render();
     },
 
+    onItemChange: function() {
+      this.ventas.trigger('refresh');
+    },
+
     render: function() {
         new ManageProductsView();
+        this.ventas = new VentasView();
     }
   });
 
@@ -356,7 +464,7 @@ $(function() {
     }
   });
 
-  new AppRouter;
-  new AppView;
+  new AppRouter();
+  var appView = new AppView();
   Parse.history.start();
 });
