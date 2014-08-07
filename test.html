@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="utf-8">
+    <title>
+    </title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link href="css/helena.css" media="all" rel="stylesheet" type="text/css"/>
+    <link href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css"
+    rel="stylesheet">
+    <link href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css"
+    rel="stylesheet">
+  </head>
+
+  <body>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"
+    >
+    </script>
+    <script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"
+    >
+    </script>
+    <script src="js/underscore.js"></script>
+    <script src="http://www.parsecdn.com/js/parse-1.2.13.min.js"></script>
+    <script src="js/helena.js"></script>
+
+    <div id="helenaapp">
+      <div class="title">
+        <h1>Helena de Troya</h1>
+      </div>
+
+      <div class="container">
+        <div class="products-content">
+        </div>
+        <hr>
+        <div class="product-detail-content">
+        </div>
+      </div>
+      <br>
+      <hr>
+      <h3>
+        Ventas
+      </h3>
+      <div class="ventas-content">
+      </div>
+    </div>
+
+    <script type="text/template" id="products-template">
+    <div class="table-responsive">
+      <table class="table table-bordered table-hover">
+        <colgroup>
+          <col class="col-xs-6">
+          <col class="col-xs-2">
+          <col class="col-xs-2">
+        </colgroup>
+        <thead>
+          <tr>
+            <th>
+              Producto
+            </th>
+            <th>
+              Precio
+            </th>
+            <th>
+            </th>
+          </tr>
+        </thead>
+        <tbody id="products-body">
+        </tbody>
+      </table>
+    </div>
+    </script>
+    <script type="text/template" id="product-template">
+        <td>
+          <%= title %>
+        </td>
+        <td>
+          <%= price %>
+        </td>
+        <td class="text-center">
+          <button type="submit" class="btn btn-sm btn-default detail-button">
+            Detalle
+          </button>
+        </td>
+    </script>
+
+    <script type="text/template" id="product-detail-template">
+    <div class="table-responsive">
+      <table class="table table-bordered table-hover">
+        <colgroup>
+          <col class="col-xs-4">
+          <col class="col-xs-1">
+          <col class="col-xs-1">
+          <col class="col-xs-2">
+        </colgroup>
+        <thead>
+          <tr>
+            <th>
+              Producto
+            </th>
+            <th>
+              Talle
+            </th>
+            <th>
+              Precio
+            </th>
+            <th>
+            </th>
+          </tr>
+        </thead>
+        <tbody id="items-body">
+        </tbody>
+      </table>
+    </div>
+    </script>
+    <script type="text/template" id="item-template">
+        <td class="textcell">
+          <%= product.title %>
+        </td>
+        <td class="textcell">
+          <%= size %>
+        </td>
+        <td class="textcell">
+          <%= product.price %>
+        </td>
+        <td class="text-center">
+          <% if (sold) { %>
+          <button type="submit" class="btn btn-sm btn-success disabled sold-button">
+            Vendido!
+          </button>
+          <button type="submit" class="btn btn-sm btn-primary undo-sold-button">
+            Deshacer
+          </button>
+          <div class="sold-at">Vendido el <%= soldAt %></div>
+          <% } else { %>
+          <button type="submit" class="btn btn-warning sell-button">
+            Vender
+          </button>
+          <% } %>
+        </td>
+    </script>
+
+    <script type="text/template" id="ventas-template">
+    <table class="table table-bordered">
+      <tbody>
+        <tr>
+          <td>
+            Cell 1
+          </td>
+          <td>
+            Cell 2
+          </td>
+          <td>
+            Cell 3
+          </td>
+          <td>
+            Cell
+          </td>
+        </tr>
+        <tr>
+        </tr>
+        <tr>
+          <td>
+            total
+          </td>
+        </tr>
+      </tbody>
+      <thead>
+        <tr>
+          <th>
+            Producto
+          </th>
+          <th>
+            Talle
+          </th>
+          <th>
+            Fecha
+          </th>
+          <th>
+            Precio
+          </th>
+        </tr>
+      </thead>
+      <thead>
+        <tr>
+        </tr>
+      </thead>
+    </table>
+    </script>
+  </body>
+
+</html>

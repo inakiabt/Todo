@@ -1,0 +1,12 @@
+.sold-at {
+    color: gray;
+    font-size: 11px;
+}
+
+.success .textcell {
+    font-weight: bold;
+}
+
+.active .textcell {
+    text-decoration: line-through;
+}
