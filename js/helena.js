@@ -162,6 +162,7 @@ $(function() {
         $('button.class-luli').first().before('<h4>Luli</h4>');
         $('button.class-helena').first().before('<h4>Helena</h4>');
         $('button.class-mylo').first().before('<h4>Mylo</h4>');
+        $('button.class-troyita').first().before('<h4>Troyita</h4>');
       } catch (e) {
       }
     },
