@@ -138,6 +138,7 @@ $(function() {
       this.products.bind('all',     this.render);
 
       // Fetch all the todo items for this user
+      $('.loading').show();
       this.products.fetch();
 
     },
@@ -168,6 +169,7 @@ $(function() {
     // Re-rendering the App just means refreshing the statistics -- the rest
     // of the app doesn't change.
     render: function() {
+      $('.loading').hide();
 
       this.addAll();
       this.delegateEvents();
@@ -198,21 +200,34 @@ $(function() {
     initialize: function() {
       _.bindAll(this, 'render', 'sold', 'sell', 'undoSold');
 
-      this.model.bind('change:sold', this.render);
+      this.model.bind('sync', this.render);
     },
 
     sold: function() {
     },
     sell: function() {
+      var model = this.model;
+      $('.loading').show();
       this.model.save({
         sold: true,
         soldAt: new Date()
+      }).fail(function(){
+        alert('Error al guardar los datos de "' + model.get('product').get('title') + '-' + model.get('product').get('type') + '" talle ' + model.get('size') + ', intentar nuevamente luego de refrescar la pagina');
+      }).done(function(){
+        $('.loading').hide();
       });
     },
     undoSold: function() {
+      var model = this.model;
       this.model.unset('soldAt');
       this.model.unset('sold');
-      this.model.save();
+      $('.loading').show();
+      this.model.save().fail(function(){
+        alert('Error al deshacer los datos de "' + model.get('product').get('title') + '-' + model.get('product').get('type') + '" talle ' + model.get('size') + ', intentar nuevamente luego de refrescar la pagina');
+      }).done(function(){
+        $('.loading').hide();
+      });
+
     },
     render: function() {
       // console.log('ITEM', this.model.toJSON(), this.model.get("soldAt"));
@@ -263,8 +278,10 @@ $(function() {
 
       var me = this;
       // Fetch all the todo items for this user
+      $('.loading').show();
       this.items.fetch().done(function(){
         me.render();
+        $('.loading').hide();
       });
     },
 
