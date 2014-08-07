@@ -48,42 +48,13 @@
     </div>
 
     <script type="text/template" id="products-template">
-    <div class="table-responsive">
-      <table class="table table-bordered table-hover">
-        <colgroup>
-          <col class="col-xs-6">
-          <col class="col-xs-2">
-          <col class="col-xs-2">
-        </colgroup>
-        <thead>
-          <tr>
-            <th>
-              Producto
-            </th>
-            <th>
-              Precio
-            </th>
-            <th>
-            </th>
-          </tr>
-        </thead>
-        <tbody id="products-body">
-        </tbody>
-      </table>
-    </div>
+        <div id="products-body">
+        </div>
     </script>
     <script type="text/template" id="product-template">
-        <td>
+        <button type="submit" class="btn btn-sm btn-default detail-button">
           <%= title %>
-        </td>
-        <td>
-          <%= price %>
-        </td>
-        <td class="text-center">
-          <button type="submit" class="btn btn-sm btn-default detail-button">
-            Detalle
-          </button>
-        </td>
+        </button>
     </script>
 
     <script type="text/template" id="product-detail-template">
@@ -117,13 +88,13 @@
     </script>
     <script type="text/template" id="item-template">
         <td class="textcell">
-          <%= product.title %>
+          <%= product.title %> - <%= product.type %>
         </td>
         <td class="textcell">
           <%= size %>
         </td>
         <td class="textcell">
-          <%= product.price %>
+          $<%= product.price %>
         </td>
         <td class="text-center">
           <% if (sold) { %>

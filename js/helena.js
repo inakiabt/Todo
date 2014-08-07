@@ -18,6 +18,10 @@ $(function() {
     // Default attributes for the todo.
     defaults: {
       title: "EMPTY TITLE"
+    },
+
+    getTitle: function(){
+      return this.get('title') + ' - ' + this.get('type');
     }
   });
 
@@ -48,7 +52,7 @@ $(function() {
 
     // Todos are sorted by their original insertion order.
     comparator: function(todo) {
-      return todo.get('order');
+      return todo.get('title');
     }
 
   });
@@ -83,7 +87,7 @@ $(function() {
   var ProductView = Parse.View.extend({
 
     //... is a list tag.
-    tagName:  "tr",
+    tagName:  "span",
 
     // Cache the template function for a single item.
     template: _.template($('#product-template').html()),
@@ -106,7 +110,9 @@ $(function() {
 
     // Re-render the contents of the todo item.
     render: function() {
-      $(this.el).html(this.template(this.model.toJSON()));
+      $(this.el).html(this.template(_.extend(this.model.toJSON(), {
+        title: this.model.getTitle()
+      })));
       return this;
     }
 
@@ -212,7 +218,7 @@ $(function() {
       });
     },
     render: function() {
-      console.log('ITEM', this.model.toJSON(), this.model.get("soldAt"));
+      // console.log('ITEM', this.model.toJSON(), this.model.get("soldAt"));
 
       this.$el.removeClass('success');
       this.$el.removeClass('active');
