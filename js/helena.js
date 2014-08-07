@@ -355,6 +355,30 @@ $(function() {
 
   });
 
+  var VentasTotalView = Parse.View.extend({
+
+    //... is a list tag.
+    tagName:  "tr",
+
+    // Cache the template function for a single item.
+    template: _.template($('#venta-total-template').html()),
+
+    // The TodoView listens for changes to its model, re-rendering. Since there's
+    // a one-to-one correspondence between a Todo and a TodoView in this
+    // app, we set a direct reference on the model for convenience.
+    initialize: function() {
+      _.bindAll(this, 'render');
+    },
+
+    render: function() {
+      this.$el.html(this.template({total: this.model.reduce(function(memo, venta){
+        return memo + venta.get('product').get('price');
+      }, 0)}));
+      return this;
+    }
+
+  });
+
   var VentasView = Parse.View.extend({
 
     // Delegated events for creating new items, and clearing completed ones.
@@ -410,11 +434,18 @@ $(function() {
       this.items.each(this.addOne);
     },
 
+    updateTotal: function(){
+      this.$("#ventas-footer").html("");
+      var view = new VentasTotalView({model: this.items});
+      this.$("#ventas-footer").append(view.render().el);
+    },
+
     // Re-rendering the App just means refreshing the statistics -- the rest
     // of the app doesn't change.
     render: function() {
 
       this.addAll();
+      this.updateTotal();
       this.delegateEvents();
 
     }

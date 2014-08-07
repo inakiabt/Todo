@@ -137,10 +137,16 @@
             </th>
           </tr>
         </thead>
+        <tfoot id="ventas-footer">
+        </tfoot>
         <tbody id="ventas-body">
         </tbody>
       </table>
     </div>
+    </script>
+    <script type="text/template" id="venta-total-template">
+      <td colspan="2" class="text-right">Total</td>
+      <td>$<%= total %></td>
     </script>
     <script type="text/template" id="venta-item-template">
         <td class="textcell">
