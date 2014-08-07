@@ -18,10 +18,6 @@ $(function() {
     // Default attributes for the todo.
     defaults: {
       title: "EMPTY TITLE"
-    },
-
-    getTitle: function(){
-      return this.get('title') + ' - ' + this.get('type');
     }
   });
 
@@ -71,13 +67,7 @@ $(function() {
   var ItemList = Parse.Collection.extend({
 
     // Reference to this collection's model.
-    model: Item,
-
-    // Todos are sorted by their original insertion order.
-    comparator: function(todo) {
-      return todo.get('size');
-    }
-
+    model: Item
   });
 
   // Todo Item View
@@ -110,9 +100,7 @@ $(function() {
 
     // Re-render the contents of the todo item.
     render: function() {
-      $(this.el).html(this.template(_.extend(this.model.toJSON(), {
-        title: this.model.getTitle()
-      })));
+      $(this.el).html(this.template(this.model.toJSON()));
       return this;
     }
 
@@ -165,6 +153,16 @@ $(function() {
     addAll: function(collection, filter) {
       this.$("#products-body").html("");
       this.products.each(this.addOne);
+
+      // grr
+      try {
+        $('button.class-fanti').first().before('<h4>Fanti</h4>');
+        $('button.class-helu').first().before('<h4>Helu</h4>');
+        $('button.class-luli').first().before('<h4>Luli</h4>');
+        $('button.class-helena').first().before('<h4>Helena</h4>');
+        $('button.class-mylo').first().before('<h4>Mylo</h4>');
+      } catch (e) {
+      }
     },
 
     // Re-rendering the App just means refreshing the statistics -- the rest
@@ -213,9 +211,8 @@ $(function() {
     },
     undoSold: function() {
       this.model.unset('soldAt');
-      this.model.save({
-        sold: false
-      });
+      this.model.unset('sold');
+      this.model.save();
     },
     render: function() {
       // console.log('ITEM', this.model.toJSON(), this.model.get("soldAt"));
@@ -262,7 +259,7 @@ $(function() {
       this.items.query = new Parse.Query(Item);
       this.items.query.equalTo("product", this.model);
       this.items.query.include("product");
-      this.items.query.descending("sold");
+      this.items.query.ascending(["sold", "size"]);
 
       var me = this;
       // Fetch all the todo items for this user

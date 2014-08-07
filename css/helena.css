@@ -10,3 +10,7 @@
 .active .textcell {
     text-decoration: line-through;
 }
+
+.container-fluid {
+    padding: 35px;
+}

@@ -1,109 +1,168 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
   <head>
     <meta charset="utf-8">
-    <title>Parse JavaScript Todo App</title>
-    <link href="css/todos.css" media="all" rel="stylesheet" type="text/css"/>
-    <script src="http://code.jquery.com/jquery-2.0.3.min.js"></script>
-    <script src="js/underscore.js"></script>
-    <script src="http://www.parsecdn.com/js/parse-1.2.13.min.js"></script>
-    <script src="js/todos.js"></script>
+    <title>
+    </title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link href="css/helena.css" media="all" rel="stylesheet" type="text/css"/>
+    <link href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css"
+    rel="stylesheet">
+    <link href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css"
+    rel="stylesheet">
   </head>
 
   <body>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"
+    >
+    </script>
+    <script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"
+    >
+    </script>
+    <script src="js/underscore.js"></script>
+    <script src="http://www.parsecdn.com/js/parse-1.2.19.min.js"></script>
+    <script src="js/helena.js"></script>
 
-    <!-- Todo App Interface -->
-
-    <div id="todoapp">
+    <div id="helenaapp">
       <div class="title">
-        <h1>Parse Todos</h1>
+        <h1>Helena de Troya</h1>
       </div>
 
-      <div class="content">
-      </div>
-    </div>
-
-    <div id="credits">
-      Powered by <a href="https://www.parse.com">Parse</a> using the <a href="https://www.parse.com/docs/js_guide">JavaScript SDK</a>.<br /><br />
-      Learn how we built it in the <a href='https://parse.com/tutorials/todo-app-with-javascript'>tutorial</a>.
-    </div>
-
-    <!-- Templates -->
-
-    <script type="text/template" id="login-template">
-      <header id="header"></header>
-      <div class="login">
-        <form class="login-form">
-          <h2>Log In</h2>
-          <div class="error" style="display:none"></div>
-          <input type="text" id="login-username" placeholder="Username" />
-          <input type="password" id="login-password" placeholder="Password" />
-          <button>Log In</button>
-        </form>
-
-        <form class="signup-form">
-          <h2>Sign Up</h2>
-          <div class="error" style="display:none"></div>
-          <input type="text" id="signup-username" placeholder="Username" />
-          <input type="password" id="signup-password" placeholder="Create a Password" />
-          <button>Sign Up</button>
-        </form>
-      </div>
-    </script>
-
-    <script type="text/template" id="manage-todos-template">
-      <div id="user-info">
-        Signed in as <%= Parse.User.current().escape("username") %> (<a href="#" class="log-out">Log out</a>)
-      </div>
-
-      <div class="section">
-
-        <header id="header">
-          <input id="new-todo" placeholder="What needs to be done?" type="text" />
-        </header>
-
-        <div id="main">
-          <input id="toggle-all" type="checkbox">
-          <label for="toggle-all">Mark all as complete</label>
-
-          <ul id="todo-list">
-            <img src='images/spinner.gif' class='spinner' />
-          </ul>
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-md-4 products-content">
+          </div>
+          <div class="col-md-8 product-detail-content">
+          </div>
         </div>
-
-        <div id="todo-stats"></div>
       </div>
+
+<!--       <br>
+      <hr>
+      <h3>
+        Ventas
+      </h3>
+      <div class="ventas-content">
+      </div>
+ -->
+    </div>
+
+    <script type="text/template" id="products-template">
+        <div id="products-body">
+        </div>
+    </script>
+    <script type="text/template" id="product-template">
+        <button type="submit" class="btn btn-sm btn-default detail-button class-<%= title.toLowerCase().replace(' ', '-') %>">
+          <%= type %>
+        </button>
     </script>
 
+    <script type="text/template" id="product-detail-template">
+    <div class="table-responsive">
+      <table class="table table-bordered table-hover">
+        <colgroup>
+          <col class="col-xs-4">
+          <col class="col-xs-1">
+          <col class="col-xs-1">
+          <col class="col-xs-2">
+        </colgroup>
+        <thead>
+          <tr>
+            <th>
+              Producto
+            </th>
+            <th>
+              Talle
+            </th>
+            <th>
+              Precio
+            </th>
+            <th>
+            </th>
+          </tr>
+        </thead>
+        <tbody id="items-body">
+        </tbody>
+      </table>
+    </div>
+    </script>
     <script type="text/template" id="item-template">
-      <li class="<%= done ? 'completed' : '' %>">
-	<div class="view">
-	  <input class="toggle" type="checkbox" <%= done ? 'checked="checked"' : '' %>>
-	  <label class="todo-content"><%= _.escape(content) %></label>
-	  <button class="todo-destroy"></button>
-	</div>
-	<input class="edit" value="<%= _.escape(content) %>">
-      </li>
+        <td class="textcell">
+          <%= product.title %> - <%= product.type %>
+        </td>
+        <td class="textcell">
+          <%= size %>
+        </td>
+        <td class="textcell">
+          $<%= product.price %>
+        </td>
+        <td class="text-center">
+          <% if (sold) { %>
+          <button type="submit" class="btn btn-sm btn-success disabled sold-button">
+            Vendido!
+          </button>
+          <button type="submit" class="btn btn-sm btn-primary undo-sold-button">
+            Deshacer
+          </button>
+          <div class="sold-at">Vendido el <%= soldAt %></div>
+          <% } else { %>
+          <button type="submit" class="btn btn-warning sell-button">
+            Vender
+          </button>
+          <% } %>
+        </td>
     </script>
 
-    <script type="text/template" id="stats-template">
-      <footer id="footer">
-	<span id="todo-count"><strong><%= remaining %></strong> <%= remaining == 1 ? 'item' : 'items' %> left</span>
-	<ul id="filters">
-	  <li>
-	    <a href="javascript:void(0)" id="all" class="selected">All</a>
-	  </li>
-	  <li>
-	    <a href="javascript:void(0)" id="active">Active</a>
-	  </li>
-	  <li>
-	    <a href="javascript:void(0)" id="completed">Completed</a>
-	  </li>
-	</ul>
-	<button id="clear-completed">Clear completed (<%= done %>)</button>
-      </footer>
+    <script type="text/template" id="ventas-template">
+    <table class="table table-bordered">
+      <tbody>
+        <tr>
+          <td>
+            Cell 1
+          </td>
+          <td>
+            Cell 2
+          </td>
+          <td>
+            Cell 3
+          </td>
+          <td>
+            Cell
+          </td>
+        </tr>
+        <tr>
+        </tr>
+        <tr>
+          <td>
+            total
+          </td>
+        </tr>
+      </tbody>
+      <thead>
+        <tr>
+          <th>
+            Producto
+          </th>
+          <th>
+            Talle
+          </th>
+          <th>
+            Fecha
+          </th>
+          <th>
+            Precio
+          </th>
+        </tr>
+      </thead>
+      <thead>
+        <tr>
+        </tr>
+      </thead>
+    </table>
     </script>
-
   </body>
 
 </html>
